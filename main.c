@@ -96,21 +96,21 @@ int main(void) {
         int pressed = buttons_pressed();
 
         if(pressed >= 2) {
-            LATBbits.LATB9 = 1;
+            LATBbits.LATB9 = 1;   //LED stays ON if 2 or more buttons are pressed
         }
-        else if(PORTBbits.RB7 == 0) { // PB1
+        else if(PORTBbits.RB7 == 0) { // Logic to handle if PB1 is pressed
             LATBbits.LATB9 = 1;
             delay_check(DELAY_250MS);
             LATBbits.LATB9 = 0;
             delay_check(DELAY_250MS);
         }
-        else if(PORTBbits.RB4 == 0) { // PB2
+        else if(PORTBbits.RB4 == 0) { // Logic to handle if PB2 is pressed
             LATBbits.LATB9 = 1;
             delay_check(DELAY_1S);
             LATBbits.LATB9 = 0;
             delay_check(DELAY_1S);
         }
-        else if(PORTAbits.RA4 == 0) { // PB3
+        else if(PORTAbits.RA4 == 0) { // Logic to handle if PB3 is pressed
             LATBbits.LATB9 = 1;
             delay_check(DELAY_6S);
             LATBbits.LATB9 = 0;
