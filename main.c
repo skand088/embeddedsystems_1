@@ -57,9 +57,9 @@
  * You might find it useful to add your own #defines to improve readability here
  */
 
-#define DELAY_250MS 100000
-#define DELAY_1S    150000
-#define DELAY_6S   1000000
+#define DELAY_250MS 30000
+#define DELAY_1S    80000
+#define DELAY_6S   500000
 
 int buttons_pressed(void) {
     int count = 0;
