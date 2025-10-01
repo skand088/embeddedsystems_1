@@ -1,9 +1,8 @@
 /*
  * File:   main.c
- * Author: SIMAR KANDOLA, ABIA JAHANGIR, RINAD HAMID!!!! GROUP 25
- * 
+ * Author: UPDATE THIS WITH YOUR GROUP MEMBER NAMES OR POTENTIALLY LOSE POINTS
  *
- * Created on: September 19th, 3:49pm
+ * Created on: USE THE INFORMATION FROM THE HEADER MPLAB X IDE GENERATES FOR YOU
  */
 
 // FBS
@@ -51,39 +50,28 @@
 // #pragma config statements should precede project file includes.
 
 #include <xc.h>
-#include <p24F16KA101.h>
+#include "clkChange.h"
+// Remember, you can use the "extern" keyword to access global variables defined in other files
+/**
+ * extern int16_t flag_from_other_file;
+ */
 
 /**
  * You might find it useful to add your own #defines to improve readability here
  */
 
-#define DELAY_250MS 30000
-#define DELAY_1S    80000
-#define DELAY_6S   500000
-
-int buttons_pressed(void) {
-    int count = 0;
-    if(PORTBbits.RB7 == 0) count++; // PB1
-    if(PORTBbits.RB4 == 0) count++; // PB2
-    if(PORTAbits.RA4 == 0) count++; // PB3
-    return count;
-}
-
-void delay_check(unsigned long loops) {
-    volatile unsigned long i;
-    for(i = 0; i < loops; i++) {
-        if(buttons_pressed() >= 2) {
-            LATBbits.LATB9 = 1;      //Immediate handling if 2+ buttons pressed
-            while(buttons_pressed() >= 2);  //Wait until fewer than 2 buttons pressed 
-            return;                           
-        }
-    }
-}
+volatile int led1_should_blink = 0;  // visible in ISR
 
 int main(void) {
-    AD1PCFG = 0xFFFF; /* keep this line as it sets I/O pins that can also be analog to be digital */
+    AD1PCFG = 0xFFFF;
+    newClk(500);  // 500 kHz system clock
 
-    TRISBbits.TRISB9 = 0;  // LED output
+    // Configure LED1
+    TRISBbits.TRISB9 = 0;
+    LATBbits.LATB9 = 0;
+    
+    
+    // pushbuttons 
     TRISBbits.TRISB7 = 1;  // PB1 input
     TRISBbits.TRISB4 = 1;  // PB2 input
     TRISAbits.TRISA4 = 1;  // PB3 input
@@ -92,34 +80,30 @@ int main(void) {
     CNPU1bits.CN1PUE  = 1; // PB2
     CNPU1bits.CN0PUE  = 1; // PB3
 
+
+    T2CONbits.T32 = 0;      // 16-bit mode
+    T2CONbits.TCKPS = 00; // 1:1 prescaler
+    TMR2 = 0;
+    PR2 = 62499;            // 0.25 s interval
+    IPC1bits.T2IP = 2;      // interrupt priority
+    IFS0bits.T2IF = 0;      // clear flag
+    IEC0bits.T2IE = 1;      // enable Timer2 interrupt
+    T2CONbits.TON = 1;      // start timer
+
     while(1) {
-        int pressed = buttons_pressed();
+    if (!PORTBbits.RB7) {
+                led1_should_blink = 1;  // pressed -> blink
+            } else {
+                led1_should_blink = 0;  // not pressed -> LED off
+                LATBbits.LATB9 = 0;
+            }    }
+}
 
-        if(pressed >= 2) {
-            LATBbits.LATB9 = 1;   //LED stays ON if 2 or more buttons are pressed
-        }
-        else if(PORTBbits.RB7 == 0) {   //PB1 is pressed
-            LATBbits.LATB9 = 1;          // Turn LED on
-            delay_check(DELAY_250MS);    // Delay for 250 ms (blink on)
-            LATBbits.LATB9 = 0;          // Turn LED off
-            delay_check(DELAY_250MS);   // Delay for 250 ms (blink off)
-        }
-        else if(PORTBbits.RB4 == 0) { //PB2 is pressed
-            LATBbits.LATB9 = 1;        // Turn LED on
-            delay_check(DELAY_1S);     // Delay for 1s (blink on)
-            LATBbits.LATB9 = 0;        // Turn LED off(blink off)
-            delay_check(DELAY_1S);     // Delay for 1s (blink off)
-        }
-        else if(PORTAbits.RA4 == 0) { //PB3 is pressed
-            LATBbits.LATB9 = 1;       //Turn LED on
-            delay_check(DELAY_6S);    // Delay for 6s (blink on)
-            LATBbits.LATB9 = 0;       //Turn LED off
-            delay_check(DELAY_6S);    // Delay for 6s (blink off)
-        }
-        else {
-            LATBbits.LATB9 = 0;      // LED off when no buttons are pressed
-        }
+// Timer 2 interrupt
+void __attribute__((interrupt, no_auto_psv)) _T2Interrupt(void){
+    IFS0bits.T2IF = 0;  // clear interrupt flag
+
+    if (led1_should_blink) {
+        LATBbits.LATB9 = !LATBbits.LATB9;  // toggle LED1
     }
-
-    return 0;
 }
