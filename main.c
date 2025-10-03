@@ -64,8 +64,6 @@
 int16_t flag = 0;
 
         int main(void) {
-
-            AD1PCFG = 0xFFFF;   // Set all pins to digital
             IOinit();           // Initialize LEDs and pushbuttons
 
             IPC0bits.T1IP = 4;  // example
