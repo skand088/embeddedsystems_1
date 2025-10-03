@@ -1,15 +1,19 @@
+    /*
+     * File:   IOs.h
+     * Author: Rinad Hamid, Simar Kandola, Abia Jahangir
+     *
+     * Created on: October 2, 2025
+     */
+
 #ifndef IOS_H
 #define IOS_H
 
+#include "TimeDelay.h"
 #include <xc.h>
-#include <stdint.h>  
+#include <stdint.h>
 
-// LED macros
-#define LED1 LATBbits.LATB9
-#define LED2 LATAbits.LATA6
-
-// Function prototypes
+// Function Prototypes
 void IOinit(void);
 void IOcheck(void);
 
-#endif 
+#endif // IOS_H
