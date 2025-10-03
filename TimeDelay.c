@@ -16,7 +16,7 @@ void delay_ms(uint16_t time_ms){
     newClk(500);  
     
     //calculate the total number of instruction cycles for the delay
-     uint32_t cycles = (uint32_t)time_ms * 250;  // 250 cycles per ms at 500kHz Fcy
+     uint32_t cycles = (uint32_t)time_ms * 250;  // 250 cycles per ms at 250kHz Fcy
 
     //select appropriate prescaler and PR2 value based on the number of cycles
     if (cycles <= 65535) {
