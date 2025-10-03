@@ -65,8 +65,8 @@ int16_t flag = 0;
 
         int main(void) {
 
-            AD1PCFG = 0xFFFF;
-            IOinit();
+            AD1PCFG = 0xFFFF;   // Set all pins to digital
+            IOinit();           // Initialize LEDs and pushbuttons
 
             IPC0bits.T1IP = 4;  // example
             IPC1bits.T2IP = 5;  // higher prioriy
@@ -80,11 +80,11 @@ int16_t flag = 0;
                 T1CONbits.TON = 1;
 
             while(1) {
-                IOcheck();
+                IOcheck();        //Check buttons and control LED1
             }
         }
 
-
+        //Timer2 interrupt (used in delay_ms)
         void __attribute__((interrupt, no_auto_psv)) _T2Interrupt(void){
             IFS0bits.T2IF = 0;
             TMR2 = 0;
@@ -92,7 +92,7 @@ int16_t flag = 0;
             flag = 1;
 
         }
-
+        //Timer1 interrupt (toggles LED2)
         void __attribute__((interrupt, no_auto_psv)) _T1Interrupt(void){
            IFS0bits.T1IF = 0;            // clear interrupt flag
             LATAbits.LATA6 = !LATAbits.LATA6;  // toggle LED
