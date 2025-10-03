@@ -69,9 +69,7 @@ int16_t flag = 0;
             IOinit();
 
             IPC0bits.T1IP = 4;  // example
-            IPC1bits.T2IP = 5;  // higher priority
-    //
-    //
+            IPC1bits.T2IP = 5;  // higher prioriy
                 T1CONbits.TCKPS = 01; // set prescaler
                 T1CONbits.TCS = 0; // use internal clock
                 T1CONbits.TSIDL = 0; //operate in idle mode
@@ -83,7 +81,7 @@ int16_t flag = 0;
 
             while(1) {
                 IOcheck();
-        }
+            }
         }
 
 
