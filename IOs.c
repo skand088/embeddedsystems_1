@@ -11,33 +11,32 @@
 #include "IOs.h"
 #include "clkChange.h"
 
+//define LED pins for easier reference
 #define LED1 LATBbits.LATB9
 #define LED2 LATAbits.LATA6
 
 void IOinit(void) {
     
-    newClk(500);
-    AD1PCFG = 0xFFFF;
+    newClk(500);      //set clock frequency to 500 kHz
+    AD1PCFG = 0xFFFF;  //set all analog pins to digital
 
-    // LED1 outputs
+     //configure LED1 as output and turn it off
     TRISBbits.TRISB9 = 0;
     LATBbits.LATB9 = 0;
   
-    // LED2 outputs
+    //configure LED2 as output and turn it off
     TRISAbits.TRISA6 = 0;
     LATAbits.LATA6 = 0;
 
-    // Pushbuttons
+    //configure pushbuttons as inputs
     TRISBbits.TRISB7 = 1; // PB1
     TRISBbits.TRISB4 = 1; // PB2
     TRISAbits.TRISA4 = 1; // PB3
-
+    
+    //enable internal pull-up resistors for the pushbuttons
     CNPU2bits.CN23PUE = 1; // PB1
     CNPU1bits.CN1PUE  = 1; // PB2
     CNPU1bits.CN0PUE  = 1; // PB3
-   
-
-
 }
 
 void IOcheck(void) {
@@ -66,7 +65,7 @@ void IOcheck(void) {
         delay_ms(6000);
     }
     else {
-        LED1 = 0;  // No PB pressed
+        LED1 = 0;  // No PB pressed LED is off
     }
 }
 
